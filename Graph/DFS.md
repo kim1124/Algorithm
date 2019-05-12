@@ -112,3 +112,8 @@
 ## 4. 문제 링크
 
 <https://www.acmicpc.net/problem/1260>
+
+##5. 출처
+
++ 백준 알고리즘 (https://www.acmicpc.net)
++ 김혜자 선생님도 울고갈 갓고코딩넷 많이 참고하시기 바랍니다. (http://www.algocoding.net)
