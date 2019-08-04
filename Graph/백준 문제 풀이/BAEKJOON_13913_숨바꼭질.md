@@ -4,133 +4,137 @@
 
 ## 1. 코드
 
-#include <stdio.h>
-#define MAX 100000
+<pre>
+	<code>
+		#include <stdio.h>
+		#define MAX 100000
 
-// 큐 필요
-int Q[MAX * 2];
-int front = -1, rear = -1;
+		// 큐 필요
+		int Q[MAX * 2];
+		int front = -1, rear = -1;
 
-// 경로 저장용
-int P[MAX + 1];
-int D[MAX + 1];
-int printP[MAX + 1];
+		// 경로 저장용
+		int P[MAX + 1];
+		int D[MAX + 1];
+		int printP[MAX + 1];
 
-// 방문 표시
-int Visited[MAX + 1];
+		// 방문 표시
+		int Visited[MAX + 1];
 
-void printPath (int v, int c, int max) {
-	// 최대치까지 오면 종료
-	if (c < 0) {
-		// 최종 출력
-		for (int i = 0; i < max; i++) {
-			printf("%d ", printP[i]);
+		void printPath (int v, int c, int max) {
+			// 최대치까지 오면 종료
+			if (c < 0) {
+				// 최종 출력
+				for (int i = 0; i < max; i++) {
+					printf("%d ", printP[i]);
+				}
+				
+				return;
+			}
+			
+			printP[c - 1] = P[v];
+			
+			// 재귀 시작
+			printPath(P[v], c - 1, max);
 		}
-		
-		return;
-	}
-	
-	printP[c - 1] = P[v];
-	
-	// 재귀 시작
-	printPath(P[v], c - 1, max);
-}
 
-void BFS (int startV, int distV) {
-	// 리어 증가
-	rear++;
-	
-	// 큐에 등록
-	Q[rear] = startV;
-	
-	// 시작 지점 추가
-	Visited[startV] = 1;
-	
-	// 시작 지점 거리, 경로 등록
-	P[rear] = startV;
-	D[startV] = 0;
-	
-	// BFS 탐색 시작
-	while (front < rear) {
-		// Front 증가
-		front++;
-		
-		// 큐에서 꺼내기
-		int nextV = Q[front];
-		
-		// 현재 위치가 목적지면 종료
-		if (nextV == distV) {
-			// 최단 거리
-			printf("%d\n", D[nextV]);
-			
-			// 최단 경로 끝에 목적지 추가
-			printP[D[nextV]] = distV;
-			
-			// 최단 경로
-			printPath(distV, D[nextV], D[nextV] + 1);
-			
-			break;
-		}
-		
-		// nextV - 1 진행 시 > nextV가 0보다 크거나 같고, 방문하지 않았다면 큐에 등록
-		if (nextV - 1 >= 0 && !Visited[nextV - 1]) {
-			// rear 증가
+		void BFS (int startV, int distV) {
+			// 리어 증가
 			rear++;
 			
 			// 큐에 등록
-			Q[rear] = nextV - 1;
+			Q[rear] = startV;
 			
-			// 방문 등록
-			Visited[nextV - 1] = 1;
+			// 시작 지점 추가
+			Visited[startV] = 1;
 			
-			// 거리 및 가중치 등록
-			P[nextV - 1] = nextV;
-			D[nextV - 1] = D[nextV] + 1;
+			// 시작 지점 거리, 경로 등록
+			P[rear] = startV;
+			D[startV] = 0;
+			
+			// BFS 탐색 시작
+			while (front < rear) {
+				// Front 증가
+				front++;
+				
+				// 큐에서 꺼내기
+				int nextV = Q[front];
+				
+				// 현재 위치가 목적지면 종료
+				if (nextV == distV) {
+					// 최단 거리
+					printf("%d\n", D[nextV]);
+					
+					// 최단 경로 끝에 목적지 추가
+					printP[D[nextV]] = distV;
+					
+					// 최단 경로
+					printPath(distV, D[nextV], D[nextV] + 1);
+					
+					break;
+				}
+				
+				// nextV - 1 진행 시 > nextV가 0보다 크거나 같고, 방문하지 않았다면 큐에 등록
+				if (nextV - 1 >= 0 && !Visited[nextV - 1]) {
+					// rear 증가
+					rear++;
+					
+					// 큐에 등록
+					Q[rear] = nextV - 1;
+					
+					// 방문 등록
+					Visited[nextV - 1] = 1;
+					
+					// 거리 및 가중치 등록
+					P[nextV - 1] = nextV;
+					D[nextV - 1] = D[nextV] + 1;
+				}
+				
+				// X + 1 진행 시 > 방문 체크만 확인
+				if (nextV + 1 <= MAX && !Visited[nextV + 1]) {
+					// rear 증가
+					rear++;
+					
+					// 큐에 등록
+					Q[rear] = nextV + 1;
+					
+					// 방문 등록
+					Visited[nextV + 1] = 1;
+					
+					// 거리 및 가중치 등록
+					P[nextV + 1] = nextV;
+					D[nextV + 1] = D[nextV] + 1;
+				}
+				
+				// X * 2 진행 시
+				if (nextV * 2 <= MAX && !Visited[nextV * 2]) {
+					// rear 증가
+					rear++;
+					
+					// 큐에 등록
+					Q[rear] = nextV * 2;
+					
+					// 방문 등록
+					Visited[nextV * 2] = 1;
+					
+					// 거리 및 가중치 등록
+					P[nextV * 2] = nextV;
+					D[nextV * 2] = D[nextV] + 1;
+				}
+			}
 		}
-		
-		// X + 1 진행 시 > 방문 체크만 확인
-		if (nextV + 1 <= MAX && !Visited[nextV + 1]) {
-			// rear 증가
-			rear++;
-			
-			// 큐에 등록
-			Q[rear] = nextV + 1;
-			
-			// 방문 등록
-			Visited[nextV + 1] = 1;
-			
-			// 거리 및 가중치 등록
-			P[nextV + 1] = nextV;
-			D[nextV + 1] = D[nextV] + 1;
-		}
-		
-		// X * 2 진행 시
-		if (nextV * 2 <= MAX && !Visited[nextV * 2]) {
-			// rear 증가
-			rear++;
-			
-			// 큐에 등록
-			Q[rear] = nextV * 2;
-			
-			// 방문 등록
-			Visited[nextV * 2] = 1;
-			
-			// 거리 및 가중치 등록
-			P[nextV * 2] = nextV;
-			D[nextV * 2] = D[nextV] + 1;
-		}
-	}
-}
 
-int main(void) {
-	int start = 0, end = 0;
-	
-	scanf("%d %d", &start, &end);
-	
-	BFS(start, end);
-	
-	return 0;
-}
+		int main(void) {
+			int start = 0, end = 0;
+			
+			scanf("%d %d", &start, &end);
+			
+			BFS(start, end);
+			
+			return 0;
+		}
+	</code>
+</pre>
 
 ## 2. 코드 분석
 
